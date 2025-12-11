@@ -7,3 +7,4 @@ public interface IAssetRepository
     Task AddAsync(Asset asset, CancellationToken cancellationToken = default);
 }
 
+

@@ -18,3 +18,4 @@ public class AssetController : ControllerBase
     // TODO: add logging here later.
 }
 
+
