@@ -1,7 +1,7 @@
 using LovionIntegrationClient.Core.Services;
-using LovionIntegrationClient.Core.Services.Implementations;
 using LovionIntegrationClient.Infrastructure.Persistence;
 using LovionIntegrationClient.Infrastructure.Repositories;
+using LovionIntegrationClient.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
