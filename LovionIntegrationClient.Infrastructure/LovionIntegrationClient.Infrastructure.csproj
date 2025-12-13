@@ -9,12 +9,24 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
-    <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
+    <PackageReference Include="System.ServiceModel.Http" Version="8.0.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
+
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\\LovionIntegrationClient.Core\\LovionIntegrationClient.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\WorkOrderSoapClient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="XmlSchemas\workorders.xsd" />
+    <Content Include="XmlSchemas\workorders.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

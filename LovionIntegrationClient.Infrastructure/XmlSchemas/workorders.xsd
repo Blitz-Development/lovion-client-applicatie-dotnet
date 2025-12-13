@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.loviondummy.nl/workorders"
+           elementFormDefault="qualified">
+
+    <!-- Root element voor één werkorder -->
+    <xs:element name="workOrder" type="WorkOrderType"/>
+
+    <!-- Type dat de velden van één werkorder beschrijft -->
+    <xs:complexType name="WorkOrderType">
+        <xs:sequence>
+            <!-- Verplicht -->
+            <xs:element name="externalWorkOrderId" type="xs:string"/>
+
+            <!-- Optioneel -->
+            <xs:element name="externalAssetRef" type="xs:string" minOccurs="0"/>
+            <xs:element name="description"     type="xs:string" minOccurs="0"/>
+            <xs:element name="scheduledDate"   type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="workType"        type="xs:string" minOccurs="0"/>
+            <xs:element name="priority"        type="xs:string" minOccurs="0"/>
+            <xs:element name="status"          type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
