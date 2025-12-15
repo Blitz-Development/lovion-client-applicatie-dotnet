@@ -1,0 +1,18 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "8.0.0",
+  "options": {
+    "inputs": [
+      "http://localhost:8080/ws/workorders.wsdl"
+    ],
+    "namespaceMappings": [
+      "*, LovionIntegrationClient.Infrastructure.Soap.Generated"
+    ],
+    "outputFile": "Reference.cs",
+    "references": [
+      "C:\\Users\\Paul van Aarle\\RiderProjects\\lovion-client-applicatie-dotnet\\LovionIntegrationClient.Infrastructure\\LovionIntegrationClient.Infrastructure.csproj"
+    ],
+    "targetFramework": "net8.0",
+    "typeReuseMode": "Specified"
+  }
+}
