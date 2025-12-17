@@ -1,7 +1,7 @@
 using System.ServiceModel;
 using LovionIntegrationClient.Core.Dtos;
 using LovionIntegrationClient.Infrastructure.Configuration;
-using LovionIntegrationClient.Infrastructure.Soap.Generated;
+using Soap_Generated;
 using Microsoft.Extensions.Options;
 
 namespace LovionIntegrationClient.Infrastructure.Soap;
