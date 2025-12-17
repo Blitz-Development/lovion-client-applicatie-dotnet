@@ -11,10 +11,16 @@ public class XmlWorkOrderSerializer
     {
         var root = new XElement(Ns + "workOrder");
 
-        // verplichte + optionele velden, alleen element maken als er een waarde is
-        if (!string.IsNullOrWhiteSpace(dto.ExternalWorkOrderId))
-            root.Add(new XElement(Ns + "externalWorkOrderId", dto.ExternalWorkOrderId));
+        // verplichte velden, geef foutmelding als er geen waarde is
+        if (string.IsNullOrWhiteSpace(dto.ExternalWorkOrderId))
+            throw new InvalidOperationException("ExternalWorkOrderId is required");
 
+        root.Add(new XElement(
+            Ns + "externalWorkOrderId",
+            dto.ExternalWorkOrderId
+        ));
+
+        // optionele velden, alleen element maken als er een waarde is
         if (!string.IsNullOrWhiteSpace(dto.ExternalAssetRef))
             root.Add(new XElement(Ns + "externalAssetRef", dto.ExternalAssetRef));
 

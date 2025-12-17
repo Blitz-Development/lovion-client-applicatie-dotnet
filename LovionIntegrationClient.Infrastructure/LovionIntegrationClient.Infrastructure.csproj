@@ -1,32 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
     <PackageReference Include="System.ServiceModel.Http" Version="8.0.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="8.0.0" />
-
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\\LovionIntegrationClient.Core\\LovionIntegrationClient.Core.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Remove="Services\WorkOrderSoapClient.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <None Remove="XmlSchemas\workorders.xsd" />
     <Content Include="XmlSchemas\workorders.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.*" />
+  </ItemGroup>
 </Project>

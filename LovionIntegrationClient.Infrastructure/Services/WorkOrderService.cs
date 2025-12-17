@@ -214,6 +214,7 @@ public class WorkOrderService : IWorkOrderService
 
     public Task<IReadOnlyList<SoapWorkOrderDto>> FetchWorkOrdersFromSoapAsync()
     {
+        _logger.LogInformation("Calling SOAP now...");
         return soapClient.GetWorkOrdersAsync();
     }
 

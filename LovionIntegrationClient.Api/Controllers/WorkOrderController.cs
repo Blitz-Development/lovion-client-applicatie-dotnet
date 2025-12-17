@@ -12,10 +12,14 @@ public class WorkOrderController : ControllerBase
     private readonly IWorkOrderService workOrderService;
     private readonly ILogger<WorkOrderController> _logger;
 
-    public WorkOrderController(IWorkOrderService workOrderService)
+    public WorkOrderController(
+        IWorkOrderService workOrderService,
+        ILogger<WorkOrderController> logger) // logger geïnjecteerd in constructor
     {
         this.workOrderService = workOrderService;
+        _logger = logger;
     }
+
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<WorkOrderDto>>> GetAllAsync([FromQuery] string? status)
