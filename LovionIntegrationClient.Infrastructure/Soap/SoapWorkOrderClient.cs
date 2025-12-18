@@ -1,4 +1,5 @@
 using System.ServiceModel;
+using System.Text;
 using LovionIntegrationClient.Core.Dtos;
 using LovionIntegrationClient.Infrastructure.Configuration;
 using Soap_Generated;
@@ -72,7 +73,7 @@ public class SoapWorkOrderClient
             + "</soapenv:Envelope>";
 
         using var httpClient = new HttpClient();
-        using var content = new StringContent(envelope, Encoding.UTF8, "text/xml");
+        using var content = new StringContent(envelope, Encoding.UTF8, new System.Net.Http.Headers.MediaTypeHeaderValue("text/xml"));
         content.Headers.Add("SOAPAction", "\"\"");
 
         var response = await httpClient.PostAsync(endpointUri, content);
