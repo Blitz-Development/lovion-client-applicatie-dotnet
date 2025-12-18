@@ -60,6 +60,11 @@ namespace LovionIntegrationClient.Infrastructure.Migrations
                     b.Property<string>("PayloadReference")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ImportRunId");

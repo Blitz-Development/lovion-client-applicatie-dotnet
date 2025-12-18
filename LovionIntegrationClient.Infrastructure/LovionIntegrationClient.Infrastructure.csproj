@@ -22,6 +22,22 @@
     <Content Include="XmlSchemas\workorders.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="XmlSchemas\xsd\asset-types.xsd" />
+    <Content Include="XmlSchemas\xsd\asset-types.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="XmlSchemas\xsd\common-types.xsd" />
+    <Content Include="XmlSchemas\xsd\common-types.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="XmlSchemas\xsd\integration-schema.xsd" />
+    <Content Include="XmlSchemas\xsd\integration-schema.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="XmlSchemas\xsd\workorder-types.xsd" />
+    <Content Include="XmlSchemas\xsd\workorder-types.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.ServiceModel.NetTcp" Version="8.*" />

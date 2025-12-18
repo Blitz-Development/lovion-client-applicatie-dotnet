@@ -75,29 +75,49 @@ public class WorkOrderService : IWorkOrderService
                 {
                     invalid++;
 
-                    var firstError = validation.Errors.FirstOrDefault() ?? "Unknown validation error";
+                    var externalId = soapOrder.ExternalWorkOrderId;
 
                     _logger.LogWarning(
                         "Invalid SOAP workorder {ExternalId}: {Error}",
-                        soapOrder.ExternalWorkOrderId ?? "(geen id)",
-                        firstError
+                        externalId ?? "(geen id)",
+                        validation.Errors.FirstOrDefault() ?? "Unknown validation error"
                     );
 
-                    // 4. ImportError aanmaken en opslaan
-                    var importError = new ImportError
+                    // Errors -> Severity = Error
+                    foreach (var err in validation.Errors)
                     {
-                        Id = Guid.NewGuid(),
-                        ImportRunId = importRun.Id,
-                        ExternalWorkOrderId = soapOrder.ExternalWorkOrderId,
-                        Message = "Validation failed for SOAP workorder.",
-                        PayloadReference = null, // hier kun je later een raw XML-id of iets dergelijks bewaren
-                        ErrorType = "VALIDATION",
-                        ErrorMessage = string.Join("; ", validation.Errors)
-                    };
+                        dbContext.ImportErrors.Add(new ImportError
+                        {
+                            Id = Guid.NewGuid(),
+                            ImportRunId = importRun.Id,
+                            ExternalWorkOrderId = externalId,
+                            Message = "XSD validation error for SOAP workorder.",
+                            PayloadReference = null,
+                            ErrorType = "XSD_VALIDATION",
+                            ErrorMessage = err,
+                            Severity = ErrorSeverity.Error
+                        });
+                    }
 
-                    dbContext.ImportErrors.Add(importError);
+                    // Warnings -> Severity = Warning
+                    foreach (var warn in validation.Warnings)
+                    {
+                        dbContext.ImportErrors.Add(new ImportError
+                        {
+                            Id = Guid.NewGuid(),
+                            ImportRunId = importRun.Id,
+                            ExternalWorkOrderId = externalId,
+                            Message = "XSD validation warning for SOAP workorder.",
+                            PayloadReference = null,
+                            ErrorType = "XSD_VALIDATION",
+                            ErrorMessage = warn,
+                            Severity = ErrorSeverity.Warning
+                        });
+                    }
+
                     continue;
                 }
+
 
                 // Geldige workorder – nu echt opslaan als WorkOrder met Status = Imported
                 _logger.LogInformation(

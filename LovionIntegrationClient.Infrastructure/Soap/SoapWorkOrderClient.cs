@@ -6,6 +6,7 @@ using Soap_Generated;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
 using System.Xml.Linq;
+using System.Text;
 
 namespace LovionIntegrationClient.Infrastructure.Soap;
 

@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LovionIntegrationClient.Core.Domain;
 
+
+
 public class ImportError
 {
     [Key]
@@ -21,6 +23,8 @@ public class ImportError
     // bijv. "VALIDATION", "MAPPING", "SOAP_FAULT", ...
     
     public string ErrorMessage { get; set; } = default!;
+    
+    public ErrorSeverity Severity { get; set; } = ErrorSeverity.Error;
 }
 
 

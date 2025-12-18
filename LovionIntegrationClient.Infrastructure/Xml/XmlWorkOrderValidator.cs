@@ -9,17 +9,19 @@ public class XmlWorkOrderValidator
 
     public XmlWorkOrderValidator()
     {
-        _schemas = new XmlSchemaSet();
+        _schemas = new XmlSchemaSet
+        {
+            XmlResolver = new XmlUrlResolver()
+        };
 
-        // Pad naar workorders.xsd in de output-map
         var schemaPath = Path.Combine(AppContext.BaseDirectory, "XmlSchemas", "workorders.xsd");
 
-        using var stream = File.OpenRead(schemaPath);
-        using var reader = XmlReader.Create(stream);
+        // Belangrijk: Add met pad zodat includes/imports relative aan dit bestand werken
+        _schemas.Add(null, schemaPath);
 
-        // Namespace moet gelijk zijn aan targetNamespace in workorders.xsd
-        _schemas.Add("http://www.loviondummy.nl/workorders", reader);
+        _schemas.Compile();
     }
+
 
     public ValidationResult Validate(string xml)
     {
@@ -33,9 +35,12 @@ public class XmlWorkOrderValidator
 
         settings.ValidationEventHandler += (_, args) =>
         {
-            // Elke schemafout komt hier binnen
-            result.Errors.Add(args.Message);
+            if (args.Severity == XmlSeverityType.Warning)
+                result.Warnings.Add(args.Message);
+            else
+                result.Errors.Add(args.Message);
         };
+        
 
         using var stringReader = new StringReader(xml);
         using var xmlReader = XmlReader.Create(stringReader, settings);
