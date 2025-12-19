@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using LovionIntegrationClient.Infrastructure.Xml;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Logging;
+using LovionIntegrationClient.Core.Validation;
+
 
 
 
@@ -27,6 +29,8 @@ builder.Services.AddDbContext<IntegrationDbContext>(options =>
 
 builder.Services.AddScoped<IWorkOrderRepository, WorkOrderRepository>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<WorkOrderBusinessRulesValidator>();
+
 
 // TODO: add logging configuration when log sinks are defined.
 builder.Services.AddScoped<IWorkOrderService, WorkOrderService>();

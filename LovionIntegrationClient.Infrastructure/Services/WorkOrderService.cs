@@ -7,6 +7,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using LovionIntegrationClient.Core.Domain; // voor ImportRun, ImportError, WorkOrder
+using LovionIntegrationClient.Core.Validation;
+using XmlValidationResult = LovionIntegrationClient.Infrastructure.Xml.ValidationResult;
+using BusinessValidationResult = LovionIntegrationClient.Core.Validation.ValidationResult;
+
+
 
 namespace LovionIntegrationClient.Infrastructure.Services;
 
@@ -16,6 +21,7 @@ public class WorkOrderService : IWorkOrderService
     private readonly SoapWorkOrderClient soapClient;
     private readonly XmlWorkOrderSerializer _xmlSerializer;
     private readonly XmlWorkOrderValidator _xmlValidator;
+    private readonly WorkOrderBusinessRulesValidator _businessValidator;
     private readonly ILogger<WorkOrderService> _logger;
 
     public WorkOrderService(
@@ -23,12 +29,14 @@ public class WorkOrderService : IWorkOrderService
         SoapWorkOrderClient soapClient,
         XmlWorkOrderSerializer xmlSerializer,
         XmlWorkOrderValidator xmlValidator,
+        WorkOrderBusinessRulesValidator businessValidator,
         ILogger<WorkOrderService> logger)
     {
         this.dbContext = dbContext;
         this.soapClient = soapClient;
         _xmlSerializer = xmlSerializer;
         _xmlValidator = xmlValidator;
+        _businessValidator = businessValidator;
         _logger = logger;
     }
 
@@ -69,7 +77,8 @@ public class WorkOrderService : IWorkOrderService
                 var xml = _xmlSerializer.ToXml(soapOrder);
 
                 // 3. Valideer XML tegen XSD
-                var validation = _xmlValidator.Validate(xml);
+                XmlValidationResult validation = _xmlValidator.Validate(xml);
+
 
                 if (!validation.IsValid)
                 {
@@ -116,6 +125,71 @@ public class WorkOrderService : IWorkOrderService
                     }
 
                     continue;
+                }
+                
+                // 3b. Business-rule validatie (tweede laag)
+                BusinessValidationResult businessValidation = _businessValidator.Validate(soapOrder);
+
+
+                if (!businessValidation.IsValid)
+                {
+                    invalid++;
+
+                    var externalId = soapOrder.ExternalWorkOrderId;
+
+                    _logger.LogWarning(
+                        "Business rule validation failed for SOAP workorder {ExternalId}: {Error}",
+                        externalId ?? "(geen id)",
+                        businessValidation.Errors.FirstOrDefault() ?? "Unknown business rule error"
+                    );
+
+                    foreach (var err in businessValidation.Errors)
+                    {
+                        dbContext.ImportErrors.Add(new ImportError
+                        {
+                            Id = Guid.NewGuid(),
+                            ImportRunId = importRun.Id,
+                            ExternalWorkOrderId = externalId,
+                            Message = "Business rule validation error for SOAP workorder.",
+                            PayloadReference = null,
+                            ErrorType = "BUSINESS_RULE",
+                            ErrorMessage = err,
+                            Severity = ErrorSeverity.Error
+                        });
+                    }
+
+                    foreach (var warn in businessValidation.Warnings)
+                    {
+                        dbContext.ImportErrors.Add(new ImportError
+                        {
+                            Id = Guid.NewGuid(),
+                            ImportRunId = importRun.Id,
+                            ExternalWorkOrderId = externalId,
+                            Message = "Business rule validation warning for SOAP workorder.",
+                            PayloadReference = null,
+                            ErrorType = "BUSINESS_RULE",
+                            ErrorMessage = warn,
+                            Severity = ErrorSeverity.Warning
+                        });
+                    }
+
+                    continue; // bij errors: niet mappen/opslaan
+                }
+
+                // Als er alleen warnings zouden zijn: opslaan maar wel doorgaan
+                foreach (var warn in businessValidation.Warnings)
+                {
+                    dbContext.ImportErrors.Add(new ImportError
+                    {
+                        Id = Guid.NewGuid(),
+                        ImportRunId = importRun.Id,
+                        ExternalWorkOrderId = soapOrder.ExternalWorkOrderId,
+                        Message = "Business rule validation warning for SOAP workorder.",
+                        PayloadReference = null,
+                        ErrorType = "BUSINESS_RULE",
+                        ErrorMessage = warn,
+                        Severity = ErrorSeverity.Warning
+                    });
                 }
 
 
