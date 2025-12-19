@@ -17,6 +17,17 @@ public class IntegrationDbContext : DbContext
     public DbSet<ImportRun> ImportRuns => Set<ImportRun>();
 
     public DbSet<ImportError> ImportErrors => Set<ImportError>();
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ImportError>()
+            .Property(e => e.Severity)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+    }
+
 
     // TODO: configure database provider
     // TODO: add migrations later

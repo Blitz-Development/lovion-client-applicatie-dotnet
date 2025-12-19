@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.loviondummy.nl/workorders"
+           targetNamespace="http://www.loviondummy.nl/workorders"
+           elementFormDefault="qualified">
+
+    <!-- haal hier alles vandaan -->
+    <xs:include schemaLocation="xsd/integration-schema.xsd"/>
+
+    <!-- Root element -->
+    <xs:element name="workOrder" type="tns:WorkOrderType"/>
+    
+</xs:schema>
