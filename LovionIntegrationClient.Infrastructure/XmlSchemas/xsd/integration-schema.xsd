@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.loviondummy.nl/workorders"
+           xmlns:wo="http://www.loviondummy.nl/workorders"
+           xmlns:common="http://www.loviondummy.nl/common"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.loviondummy.nl/common"
+               schemaLocation="common-types.xsd"/>
+
+    <xs:include schemaLocation="asset-types.xsd"/>
+    <xs:include schemaLocation="workorder-types.xsd"/>
+
+</xs:schema>

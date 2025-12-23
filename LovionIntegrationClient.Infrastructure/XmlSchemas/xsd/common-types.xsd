@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.loviondummy.nl/common"
+           xmlns:common="http://www.loviondummy.nl/common"
+           elementFormDefault="qualified">
+
+    <xs:simpleType name="WorkOrderIdType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="WO-\d{8}"/>
+            <xs:length value="11"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="WorkTypeEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="MAINTENANCE"/>
+            <xs:enumeration value="REPAIR"/>
+            <xs:enumeration value="INSPECTION"/>
+            <xs:enumeration value="INSTALLATION"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PriorityEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LOW"/>
+            <xs:enumeration value="MEDIUM"/>
+            <xs:enumeration value="HIGH"/>
+            <xs:enumeration value="URGENT"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="StatusEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="PENDING"/>
+            <xs:enumeration value="SCHEDULED"/>
+            <xs:enumeration value="IN_PROGRESS"/>
+            <xs:enumeration value="COMPLETED"/>
+            <xs:enumeration value="CANCELLED"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="DescriptionType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="5"/>
+            <xs:maxLength value="500"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- “FutureDateType” is tricky in pure XSD (geen “nu”).
+         Dit is alleen een structurele ondergrens; echte “niet in verleden”
+         doe je later in business validation. -->
+    <xs:simpleType name="FutureDateType">
+        <xs:restriction base="xs:dateTime">
+            <xs:minInclusive value="2020-01-01T00:00:00"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

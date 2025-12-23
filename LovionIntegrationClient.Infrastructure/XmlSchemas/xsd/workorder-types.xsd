@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.loviondummy.nl/workorders"
+           xmlns:wo="http://www.loviondummy.nl/workorders"
+           xmlns:common="http://www.loviondummy.nl/common"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.loviondummy.nl/common"
+               schemaLocation="common-types.xsd"/>
+
+    <xs:complexType name="WorkOrderType">
+        <xs:sequence>
+            <xs:element name="externalWorkOrderId" type="common:WorkOrderIdType"/>
+            <xs:element name="externalAssetRef" type="xs:string" minOccurs="0"/>
+            <xs:element name="description" type="common:DescriptionType" minOccurs="0"/>
+            <xs:element name="scheduledDate" type="common:FutureDateType" minOccurs="0"/>
+            <xs:element name="workType" type="common:WorkTypeEnum" minOccurs="0"/>
+            <xs:element name="priority" type="common:PriorityEnum" minOccurs="0"/>
+            <xs:element name="status" type="common:StatusEnum" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

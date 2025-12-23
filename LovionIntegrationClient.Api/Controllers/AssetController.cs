@@ -1,10 +1,11 @@
 using LovionIntegrationClient.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using LovionIntegrationClient.Core.Dtos;
 
 namespace LovionIntegrationClient.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/assets")]
 public class AssetController : ControllerBase
 {
     private readonly IAssetService assetService;
@@ -14,9 +15,23 @@ public class AssetController : ControllerBase
         this.assetService = assetService;
     }
 
-    // TODO: add endpoints for asset retrieval and import workflow.
-    // TODO: add logging here later.
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<AssetDto>>> GetAllAsync()
+    {
+        var assets = await assetService.GetAllAssetsAsync();
+        return Ok(assets);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<AssetDto>> GetByIdAsync(Guid id)
+    {
+        var asset = await assetService.GetAssetByIdAsync(id);
+
+        if (asset is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(asset);
+    }
 }
-
-
-
