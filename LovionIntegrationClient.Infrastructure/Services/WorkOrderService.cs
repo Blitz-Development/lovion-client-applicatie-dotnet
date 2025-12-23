@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+
 using LovionIntegrationClient.Core.Dtos;
 using LovionIntegrationClient.Core.Services;
 using LovionIntegrationClient.Infrastructure.Persistence;
@@ -278,32 +284,64 @@ public class WorkOrderService : IWorkOrderService
 
             importRun.CompletedAtUtc = DateTime.UtcNow;
 
-            // Einde-log met samenvatting
             _logger.LogInformation(
                 "Finished import run {ImportRunId} with status {Status}. Total={Total}, Invalid={Invalid}",
                 importRun.Id,
                 importRun.Status,
                 total,
                 invalid
-            );
+                );
 
-            // 6. Wijzigingen opslaan (ImportRun + ImportErrors + WorkOrders)
             await dbContext.SaveChangesAsync(cancellationToken);
         }
-        catch (Exception ex)
+        catch (SoapFaultException ex)
         {
-            _logger.LogError(
-                ex,
-                "Unexpected error during import run {ImportRunId}. ProcessedSoFar={Total}, InvalidSoFar={Invalid}",
-                importRun.Id,
-                total,
-                invalid
-            );
+         // Deze run is kapot gegaan door een SOAP fault
+        importRun.Status = "FAILED";
+        importRun.RetryCount += 1;
+        importRun.LastRetryAtUtc = DateTime.UtcNow;
 
-            // Voor nu: opnieuw gooien, zodat globale exception handler (Fase 7) ook z'n werk kan doen
-            throw;
+        _logger.LogWarning(
+            ex,
+            "SOAP fault during import run {ImportRunId}. IsTransient={IsTransient}, FaultCode={FaultCode}, FaultString={FaultString}",
+            importRun.Id,
+            ex.IsTransient,
+            ex.FaultCode,
+            ex.FaultString
+        );
+
+        // We loggen ook een ImportError van type SOAP_FAULT
+        dbContext.ImportErrors.Add(new ImportError
+        {
+            Id = Guid.NewGuid(),
+            ImportRunId = importRun.Id,
+            ExternalWorkOrderId = null,
+            Message = "SOAP fault while fetching workorders.",
+            PayloadReference = null,
+            ErrorType = "SOAP_FAULT",
+            ErrorMessage = ex.Message,
+            Severity = ex.IsTransient ? ErrorSeverity.Warning : ErrorSeverity.Error
+        });
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        // Doorzetten, zodat de controller/global handler het ook ziet
+        throw;
+        }
+        catch (Exception ex)
+        { 
+            _logger.LogError(
+            ex,
+            "Unexpected error during import run {ImportRunId}. ProcessedSoFar={Total}, InvalidSoFar={Invalid}",
+            importRun.Id,
+            total,
+            invalid
+        );
+
+        throw;
         }
     }
+
 
 
     public Task<IReadOnlyList<SoapWorkOrderDto>> FetchWorkOrdersFromSoapAsync()

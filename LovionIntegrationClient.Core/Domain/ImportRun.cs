@@ -19,6 +19,12 @@ public class ImportRun
     
     // Navigatie naar fouten (optioneel maar handig)
     public ICollection<ImportError> Errors { get; set; } = new List<ImportError>();
+    
+    // Aantal retries voor deze run
+    public int RetryCount { get; set; } = 0;
+
+    // Laatste retry-moment (UTC), mag null zijn als er nooit is gere-try'd
+    public DateTime? LastRetryAtUtc { get; set; }
 }
 
 
